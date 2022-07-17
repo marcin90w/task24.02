@@ -74,10 +74,12 @@ public class WorldApp {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, city);
             ResultSet resultSet = preparedStatement.executeQuery();
-            id = resultSet.getInt("ID");
+            resultSet.next();
+            id = resultSet.getInt(1);
             preparedStatement = connection.prepareStatement("UPDATE city SET Population = " + population
-                    + " WHERE Name = " + city);
-            resultSet = preparedStatement.executeQuery();
+                    + " WHERE Name = ?");
+            preparedStatement.setString(1,city);
+            int updatedRows = preparedStatement.executeUpdate();
             if (updatedCitiesPopulations.isEmpty()) {
                 updatedCitiesPopulations.add(new UpdatedCitiesPopulation(city, population, id));
             } else if (updatedCitiesPopulationsContainCity(city) > 0) {
